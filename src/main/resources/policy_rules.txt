@@ -1,0 +1,3 @@
+- The applicant's credit score must be 680 or higher.
+- The applicant must be 21 years of age or older.
+- The applicant's Debt-to-Income (DTI) ratio must be below 40%. DTI is calculated as (totalExistingDebt / annualIncome).

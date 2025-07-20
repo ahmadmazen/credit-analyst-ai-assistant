@@ -1,0 +1,5 @@
+*** Official Auto Loan Product Guide ***
+- The maximum loan amount cannot exceed 90% of the vehicle's assessed value.
+- All applications require a valid 'Vehicle Inspection Report' to be on file.
+- The minimum annual income required for an auto loan is $40,000.
+- This loan type is not available in the states of New York or Alaska.
