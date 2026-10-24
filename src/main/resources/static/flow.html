@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis Flow — Credit Analyst AI Assistant</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .flow-wrap { max-width: 1100px; margin: 0 auto; padding: 20px 28px 40px; }
+        .flow-wrap section { margin-bottom: 28px; }
+        .flow-wrap h2 { font-size: 1.05rem; margin: 0 0 4px; }
+        .flow-wrap .lead { color: var(--muted); font-size: 0.88rem; margin: 0 0 14px; }
+        .diagram-panel { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 18px; overflow-x: auto; }
+        .diagram-panel svg { display: block; min-width: 900px; width: 100%; height: auto; }
+
+        .legend { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 10px; font-size: 0.78rem; color: var(--muted); }
+        .legend .swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+
+        table.scenario-map { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .scenario-map th, .scenario-map td { padding: 9px 10px; text-align: center; border-bottom: 1px solid var(--border); }
+        .scenario-map th { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+        .scenario-map td:first-child, .scenario-map th:first-child { text-align: left; }
+        .scenario-map .who b { display: block; }
+        .scenario-map .who span { color: var(--muted); font-size: 0.75rem; }
+        .cell { display: inline-block; min-width: 64px; padding: 3px 8px; border-radius: 999px; font-weight: 600; font-size: 0.78rem; }
+        .cell.pass { background: var(--green-soft); color: var(--green); }
+        .cell.fail { background: var(--red-soft); color: var(--red); }
+        .cell.edge { background: var(--amber-soft); color: var(--amber); }
+        .cell.na { background: var(--bg); color: var(--muted); font-weight: 400; }
+        .outcome { font-weight: 800; }
+        .outcome.approve { color: var(--green); }
+        .outcome.reject { color: var(--red); }
+        .outcome.review { color: var(--amber); }
+        .note { color: var(--muted); font-size: 0.78rem; margin-top: 10px; }
+        .backlink { color: var(--accent); text-decoration: none; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+<header class="topbar">
+    <div>
+        <h1>Analysis Flow</h1>
+    </div>
+    <a class="backlink" href="index.html">&larr; Back to the demo</a>
+</header>
+
+<div class="flow-wrap">
+    <section>
+        <h2>How one analysis run works</h2>
+        <p class="lead">Two cooperating AI agents, real Java tools, and a live event stream back to the browser.</p>
+        <div class="diagram-panel">
+            <svg viewBox="0 0 1040 560" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, 'Segoe UI', Roboto, sans-serif">
+                <defs>
+                    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/>
+                    </marker>
+                    <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb"/>
+                    </marker>
+                    <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#15803d"/>
+                    </marker>
+                </defs>
+
+                <!-- Browser UI -->
+                <rect x="20" y="225" width="160" height="110" rx="10" fill="#dbeafe" stroke="#2563eb"/>
+                <text x="100" y="253" text-anchor="middle" font-size="14" font-weight="700" fill="#1e293b">Browser UI</text>
+                <text x="100" y="275" text-anchor="middle" font-size="11" fill="#475569">scenario picker</text>
+                <text x="100" y="291" text-anchor="middle" font-size="11" fill="#475569">live agent timeline</text>
+                <text x="100" y="307" text-anchor="middle" font-size="11" fill="#475569">decision card</text>
+
+                <!-- API -->
+                <rect x="250" y="225" width="170" height="110" rx="10" fill="#ffffff" stroke="#94a3b8"/>
+                <text x="335" y="253" text-anchor="middle" font-size="14" font-weight="700" fill="#1e293b">Spring Boot API</text>
+                <text x="335" y="275" text-anchor="middle" font-size="11" fill="#475569">POST /api/analysis</text>
+                <text x="335" y="291" text-anchor="middle" font-size="11" fill="#475569">SSE event stream</text>
+                <text x="335" y="307" text-anchor="middle" font-size="11" fill="#475569">analysis service</text>
+
+                <!-- Credit Analyst agent -->
+                <rect x="500" y="205" width="210" height="150" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+                <text x="605" y="233" text-anchor="middle" font-size="14" font-weight="700" fill="#2563eb">Credit Analyst Agent</text>
+                <text x="605" y="253" text-anchor="middle" font-size="11" fill="#475569">AI reasoning loop</text>
+                <text x="605" y="273" text-anchor="middle" font-size="11" fill="#475569">gathers data via tools,</text>
+                <text x="605" y="289" text-anchor="middle" font-size="11" fill="#475569">applies policy + product rules,</text>
+                <text x="605" y="305" text-anchor="middle" font-size="11" fill="#475569">computes DTI and LTV</text>
+                <text x="605" y="337" text-anchor="middle" font-size="10" fill="#64748b" font-style="italic">repeats until it has enough evidence</text>
+
+                <!-- Data tools -->
+                <rect x="500" y="415" width="210" height="125" rx="10" fill="#ecfeff" stroke="#0e7490"/>
+                <text x="605" y="441" text-anchor="middle" font-size="13" font-weight="700" fill="#0e7490">Business data tools (Java)</text>
+                <text x="605" y="461" text-anchor="middle" font-size="10.5" fill="#475569">getCustomerData · getCreditScore</text>
+                <text x="605" y="477" text-anchor="middle" font-size="10.5" fill="#475569">getFinancials · getApplicationDetails</text>
+                <text x="605" y="493" text-anchor="middle" font-size="10.5" fill="#475569">calculateDtiRatio</text>
+                <text x="605" y="519" text-anchor="middle" font-size="10" fill="#64748b" font-style="italic">applicant profile repository</text>
+
+                <!-- Document analyst -->
+                <rect x="800" y="290" width="215" height="105" rx="10" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+                <text x="907" y="317" text-anchor="middle" font-size="13" font-weight="700" fill="#7c3aed">Document Analyst</text>
+                <text x="907" y="333" text-anchor="middle" font-size="11" fill="#7c3aed">(sub-agent)</text>
+                <text x="907" y="353" text-anchor="middle" font-size="10.5" fill="#475569">answers questions using only</text>
+                <text x="907" y="369" text-anchor="middle" font-size="10.5" fill="#475569">the product guide document</text>
+
+                <!-- Guides -->
+                <rect x="800" y="435" width="215" height="80" rx="10" fill="#ffffff" stroke="#94a3b8" stroke-dasharray="5 4"/>
+                <text x="907" y="463" text-anchor="middle" font-size="12" font-weight="700" fill="#1e293b">Product guides</text>
+                <text x="907" y="482" text-anchor="middle" font-size="10.5" fill="#475569">car_loan_guide.txt</text>
+                <text x="907" y="497" text-anchor="middle" font-size="10.5" fill="#475569">personal_loan_guide.txt</text>
+
+                <!-- Decision -->
+                <rect x="800" y="60" width="215" height="105" rx="10" fill="#dcfce7" stroke="#15803d" stroke-width="2"/>
+                <text x="907" y="90" text-anchor="middle" font-size="13" font-weight="700" fill="#15803d">Structured decision</text>
+                <text x="907" y="112" text-anchor="middle" font-size="10.5" fill="#475569">APPROVE / REJECT / REVIEW</text>
+                <text x="907" y="128" text-anchor="middle" font-size="10.5" fill="#475569">reasoning steps · cited rules</text>
+                <text x="907" y="144" text-anchor="middle" font-size="10.5" fill="#475569">score · DTI · LTV metrics</text>
+
+                <!-- 1: UI -> API -->
+                <line x1="180" y1="262" x2="248" y2="262" stroke="#64748b" stroke-width="1.6" marker-end="url(#arrow)"/>
+                <circle cx="214" cy="248" r="9" fill="#2563eb"/>
+                <text x="214" y="252" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">1</text>
+                <text x="214" y="280" text-anchor="middle" font-size="9.5" fill="#64748b">start run</text>
+
+                <!-- 2: API -> UI (SSE, dashed back) -->
+                <line x1="248" y1="305" x2="180" y2="305" stroke="#2563eb" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#arrow-blue)"/>
+                <circle cx="214" cy="322" r="9" fill="#2563eb"/>
+                <text x="214" y="326" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">2</text>
+                <text x="214" y="343" text-anchor="middle" font-size="9.5" fill="#64748b">live events (SSE)</text>
+
+                <!-- 3: API -> Agent -->
+                <line x1="420" y1="280" x2="498" y2="280" stroke="#64748b" stroke-width="1.6" marker-end="url(#arrow)"/>
+                <circle cx="459" cy="266" r="9" fill="#2563eb"/>
+                <text x="459" y="270" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">3</text>
+                <text x="459" y="298" text-anchor="middle" font-size="9.5" fill="#64748b">analyze(applicant, product)</text>
+
+                <!-- 4: Agent <-> tools -->
+                <line x1="585" y1="355" x2="585" y2="413" stroke="#0e7490" stroke-width="1.6" marker-end="url(#arrow)"/>
+                <line x1="625" y1="413" x2="625" y2="357" stroke="#0e7490" stroke-width="1.6" marker-end="url(#arrow)"/>
+                <circle cx="565" cy="385" r="9" fill="#0e7490"/>
+                <text x="565" y="389" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">4</text>
+                <text x="680" y="389" text-anchor="middle" font-size="9.5" fill="#64748b">tool calls / results</text>
+
+                <!-- 5: Agent -> Doc analyst -->
+                <line x1="710" y1="320" x2="798" y2="335" stroke="#7c3aed" stroke-width="1.6" marker-end="url(#arrow)"/>
+                <circle cx="752" cy="312" r="9" fill="#7c3aed"/>
+                <text x="752" y="316" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">5</text>
+                <text x="752" y="352" text-anchor="middle" font-size="9.5" fill="#64748b">guideline question</text>
+
+                <!-- Doc analyst -> guides -->
+                <line x1="907" y1="395" x2="907" y2="433" stroke="#94a3b8" stroke-width="1.4" marker-end="url(#arrow)"/>
+                <text x="945" y="418" text-anchor="middle" font-size="9.5" fill="#64748b">reads</text>
+
+                <!-- 6: Agent -> Decision -->
+                <line x1="710" y1="230" x2="798" y2="140" stroke="#15803d" stroke-width="1.8" marker-end="url(#arrow-green)"/>
+                <circle cx="748" cy="176" r="9" fill="#15803d"/>
+                <text x="748" y="180" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">6</text>
+                <text x="770" y="203" text-anchor="middle" font-size="9.5" fill="#64748b">final answer</text>
+
+                <!-- Decision -> UI (top path) -->
+                <path d="M 798 100 L 100 100 L 100 223" fill="none" stroke="#15803d" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#arrow-green)"/>
+                <text x="440" y="92" text-anchor="middle" font-size="9.5" fill="#15803d">decision card rendered in the UI</text>
+            </svg>
+        </div>
+        <div class="legend">
+            <span><span class="swatch" style="background:#2563eb"></span>Credit Analyst (primary agent)</span>
+            <span><span class="swatch" style="background:#7c3aed"></span>Document Analyst (nested sub-agent)</span>
+            <span><span class="swatch" style="background:#0e7490"></span>Java business tools</span>
+            <span><span class="swatch" style="background:#15803d"></span>Structured outcome</span>
+        </div>
+    </section>
+
+    <section>
+        <h2>How each demo scenario travels through the rules</h2>
+        <p class="lead">Every applicant is engineered to exercise a different rule gate. The agent still derives each verdict live &mdash; this map shows the path the evidence leads it down.</p>
+        <div class="diagram-panel">
+            <table class="scenario-map">
+                <thead>
+                <tr>
+                    <th>Applicant</th>
+                    <th>Score &ge; 680<br>(policy)</th>
+                    <th>Age &ge; 21<br>(policy)</th>
+                    <th>DTI &lt; 40%<br>(policy)</th>
+                    <th>LTV &le; 90%<br>(car loan guide)</th>
+                    <th>Score &ge; 700<br>(personal guide)</th>
+                    <th>Car Loan</th>
+                    <th>Personal Loan</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td class="who"><b>APP-001 Sara Green</b><span>the clean approval</span></td>
+                    <td><span class="cell pass">745 ✓</span></td>
+                    <td><span class="cell pass">30 ✓</span></td>
+                    <td><span class="cell pass">15.8% ✓</span></td>
+                    <td><span class="cell pass">80% ✓</span></td>
+                    <td><span class="cell pass">745 ✓</span></td>
+                    <td><span class="outcome approve">APPROVE</span></td>
+                    <td><span class="outcome approve">APPROVE</span></td>
+                </tr>
+                <tr>
+                    <td class="who"><b>APP-002 John Doe</b><span>fails per-product rules</span></td>
+                    <td><span class="cell pass">690 ✓</span></td>
+                    <td><span class="cell pass">28 ✓</span></td>
+                    <td><span class="cell pass">29.4% ✓</span></td>
+                    <td><span class="cell fail">93.1% ✗</span></td>
+                    <td><span class="cell fail">690 ✗</span></td>
+                    <td><span class="outcome reject">REJECT</span></td>
+                    <td><span class="outcome reject">REJECT</span></td>
+                </tr>
+                <tr>
+                    <td class="who"><b>APP-003 Omar Haddad</b><span>debt burden too high</span></td>
+                    <td><span class="cell pass">720 ✓</span></td>
+                    <td><span class="cell pass">35 ✓</span></td>
+                    <td><span class="cell fail">50% ✗</span></td>
+                    <td><span class="cell na">not reached</span></td>
+                    <td><span class="cell na">not reached</span></td>
+                    <td><span class="outcome reject">REJECT</span></td>
+                    <td><span class="outcome reject">REJECT</span></td>
+                </tr>
+                <tr>
+                    <td class="who"><b>APP-004 Lena Torres</b><span>fails the general floor</span></td>
+                    <td><span class="cell fail">650 ✗</span></td>
+                    <td><span class="cell na">not reached</span></td>
+                    <td><span class="cell na">not reached</span></td>
+                    <td><span class="cell na">not reached</span></td>
+                    <td><span class="cell na">not reached</span></td>
+                    <td><span class="outcome reject">REJECT</span></td>
+                    <td><span class="outcome reject">REJECT</span></td>
+                </tr>
+                <tr>
+                    <td class="who"><b>APP-005 Adam Nassar</b><span>everything exactly at the limit</span></td>
+                    <td><span class="cell edge">700 ~</span></td>
+                    <td><span class="cell pass">24 ✓</span></td>
+                    <td><span class="cell edge">39% ~</span></td>
+                    <td><span class="cell edge">90.0% ~</span></td>
+                    <td><span class="cell edge">700 ~</span></td>
+                    <td><span class="outcome review">REVIEW</span></td>
+                    <td><span class="outcome review">REVIEW</span></td>
+                </tr>
+                </tbody>
+            </table>
+            <p class="note">✓ passes the rule &middot; ✗ fails it &middot; ~ sits exactly on the boundary &middot; "not reached" &mdash; the agent already has a disqualifying finding. Borderline outcomes may vary between REVIEW and a strict verdict &mdash; that variability is itself a good talking point in the demo.</p>
+        </div>
+    </section>
+</div>
+</body>
+</html>

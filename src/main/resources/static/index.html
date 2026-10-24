@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credit Analyst AI Assistant</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+    <div>
+        <h1>Credit Analyst AI Assistant</h1>
+    </div>
+    <div class="topbar-right">
+        <a class="flow-link" href="flow.html">How it works &rarr;</a>
+        <button id="rules-toggle" class="rules-toggle">Rules</button>
+        <div id="run-status" class="run-status idle">Idle</div>
+    </div>
+</header>
+
+<main class="layout">
+    <aside class="panel sidebar">
+        <h2>Scenario</h2>
+
+        <label for="applicant-select">Applicant</label>
+        <select id="applicant-select"></select>
+
+        <div id="profile-card" class="profile-card"></div>
+
+        <label for="product-select">Product</label>
+        <select id="product-select"></select>
+
+        <button id="run-btn" class="run-btn">Run analysis</button>
+    </aside>
+
+    <section class="panel main">
+        <div id="error-banner" class="error-banner hidden"></div>
+
+        <div id="decision-card" class="decision-card hidden"></div>
+
+        <h2 class="timeline-title">Agent activity</h2>
+        <div id="timeline" class="timeline">
+            <p class="placeholder">Pick an applicant and product, then run the analysis.</p>
+        </div>
+
+        <details id="raw-details" class="raw-details hidden">
+            <summary>Raw run data (JSON)</summary>
+            <pre id="raw-json"></pre>
+        </details>
+    </section>
+
+    <aside id="rules-panel" class="panel rules-panel hidden">
+        <h2>Lending rules</h2>
+        <div id="rules-tabs" class="rules-tabs"></div>
+        <div id="rules-content" class="rules-content"></div>
+        <p class="rules-legend hidden" id="rules-legend">
+            <span class="cited-swatch"></span> cited in the current decision
+        </p>
+    </aside>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>

@@ -13,8 +13,10 @@ public interface CreditAnalystAgent {
             "1. Basic applicant data (from tools like getCreditScore).",
             "2. General company policies (provided in the user message).",
             "3. Product-specific guidelines (retrieved using the getProductSpecificGuideline tool).",
-            "4. For secured loans like auto loans, you MUST check the Loan-to-Value (LTV) ratio. Get the application details, find the LTV rule from the product guide, calculate LTV as (loan amount / asset value) * 100, and verify it.",
-            "Provide a step-by-step reasoning for your 'Approve' or 'Reject' decision, citing the specific rule (general, product, or LTV) that led to your conclusion."
+            "4. For secured loans like car loans, you MUST check the Loan-to-Value (LTV) ratio. Get the application details, find the LTV rule from the product guide, calculate LTV as (loan amount / asset value) * 100, and verify it.",
+            "Provide a step-by-step reasoning for your 'Approve' or 'Reject' decision, citing the specific rule (general, product, or LTV) that led to your conclusion.",
+            "Your final answer must be the structured decision object: decision is APPROVE when every rule passes, REJECT when any rule clearly fails, REVIEW only for genuine borderline cases (e.g. a metric exactly at its limit).",
+            "In reasoningSteps record each check you performed with the rule cited verbatim and its outcome (PASS/FAIL/INFO). Fill metrics with the values you actually computed or retrieved (creditScore, dtiPercent, ltvPercent, annualIncome), and list every rule you relied on in citedRules."
     })
     @UserMessage(
             "Please analyze applicant with ID '{{applicant_id}}' who is applying for a '{{product_type}}'.\n\n" +
